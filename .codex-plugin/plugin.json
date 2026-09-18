@@ -1,0 +1,18 @@
+{
+  "name": "codex-student-interview-skills",
+  "version": "0.1.0",
+  "description": "Evidence-grounded student interview preparation, real-interview review, and Feishu delivery workflows for Codex.",
+  "author": {
+    "name": "寂辉 Amant"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "寂辉校招面试 Skills",
+    "shortDescription": "通用模拟、专岗准备、真实面试复盘与证据化交付",
+    "longDescription": "把学生简历、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可训练且可验收的面试材料。",
+    "developerName": "寂辉 Amant",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": "根据任务自动选择通用模拟面试、专岗准备或真实面试复盘 Skill；把学生简历、JD、邀约或真实逐字稿转成证据可追溯、边界清楚、可训练且可验收的材料，并保持页面范围和写后读回边界。"
+  }
+}

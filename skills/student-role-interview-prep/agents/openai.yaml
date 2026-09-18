@@ -1,0 +1,4 @@
+interface:
+  display_name: "学生专岗面试准备"
+  short_description: "围绕目标公司与岗位，把真实经历整理成能理解、能表达、能练习的专岗材料"
+  default_prompt: "使用 $student-role-interview-prep，为这位学生准备目标公司的专岗面试，复用已有资料并交付独立子页。"

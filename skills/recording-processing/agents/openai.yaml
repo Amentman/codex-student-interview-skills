@@ -1,0 +1,4 @@
+interface:
+  display_name: "录音处理"
+  short_description: "整理录音转写稿，并将高价值信息自动分流到六大知识库"
+  default_prompt: "使用 $recording-processing 整理这份录音转写稿并将有价值的信息入库。"

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "codex-student-interview-skills",
+  "version": "0.1.0",
+  "description": "Evidence-grounded student interview preparation, real-interview review, and Feishu delivery workflows for Codex.",
+  "author": {
+    "name": "寂辉 Amant",
+    "url": "https://github.com/Amentman"
+  },
+  "homepage": "https://github.com/Amentman/codex-student-interview-skills",
+  "repository": "https://github.com/Amentman/codex-student-interview-skills",
+  "keywords": [
+    "codex",
+    "skills",
+    "interview",
+    "career",
+    "feishu"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "寂辉校招面试 Skills",
+        "shortDescription": "通用模拟、专岗准备、真实面试复盘与证据化交付",
+        "longDescription": "把学生简历、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可训练且可验收的面试材料。",
+        "developerName": "寂辉 Amant",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "defaultPrompt": [
+          "为这位学生准备一套证据可追溯的通用模拟面试材料。",
+          "根据公司和 JD 生成独立的专岗面试准备页。",
+          "根据真实面试逐字稿做逐题复盘，不改通用页面和原简历。"
+        ],
+        "brandColor": "#111827"
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "简历优化与面试故事"
+  short_description: "基于JD与真实证据完成简历诊断、定向改写和面试准备"
+  default_prompt: "使用 $building-resume-interview-stories 对照目标 JD 诊断并优化我的简历，再生成与最终表述一致的面试准备。"

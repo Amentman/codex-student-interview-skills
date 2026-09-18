@@ -1,0 +1,4 @@
+interface:
+  display_name: "学生真实面试复盘"
+  short_description: "基于真实逐字稿逐题纠正、提炼训练任务并交付独立复盘页"
+  default_prompt: "使用 $student-interview-review-delivery，根据真实面试录音或逐字稿做证据可追溯的复盘，不改通用面试页和原简历。"
