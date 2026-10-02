@@ -1,15 +1,15 @@
 # 来源与可移植化说明
 
-打包日期：2026-09-18（Asia/Shanghai）。
+公开发布复核日期：2026-10-02（Asia/Shanghai）。
 
 ## 原始提示词快照
 
 | 文件 | SHA-256 |
 | --- | --- |
 | `prompts/global-AGENTS.md` | `4510de771fbf41d65ff6601c5d0f2b82fee991bafde4e675c869cc19de3f0bf4` |
-| `prompts/project-AGENTS.md` | `66aa549c7573a8b000c5b233f73f40fce980c57ce60ca4ce996e43920a520e35` |
+| `prompts/project-AGENTS.md` | `b76c4e76b696a23b5e8aa5e79337305b06ab47bbcee9fdb626ef45eca1042157` |
 
-两份文件分别来自打包时的用户级 `/Users/amant/.codex/AGENTS.md` 与校招交付项目级 `AGENTS.md`。根目录 `AGENTS.md` 仅把项目提示词中的本机绝对引用改成可移植路径，原始快照未改动。
+两份文件分别来自打包时的用户级 `~/.codex/AGENTS.md` 与校招交付项目级 `AGENTS.md`。公开发布版把本机绝对路径改成可移植表达，不包含生产凭据、私有飞书节点或真实学生材料。
 
 ## Skill 来源
 

@@ -90,15 +90,10 @@ class RepositoryContractTests(unittest.TestCase):
         for pattern in forbidden:
             self.assertIsNone(re.search(pattern, corpus, re.IGNORECASE), pattern)
 
-    def test_absolute_user_paths_are_limited_to_audited_prompt_provenance(self):
-        allowed = {
-            ROOT / "prompts" / "global-AGENTS.md",
-            ROOT / "prompts" / "project-AGENTS.md",
-            ROOT / "docs" / "PROVENANCE.md",
-        }
+    def test_repository_does_not_embed_absolute_user_paths(self):
         offenders = []
         for path in ROOT.rglob("*"):
-            if not path.is_file() or ".git" in path.parts or path in allowed:
+            if not path.is_file() or ".git" in path.parts:
                 continue
             if path.suffix not in {".md", ".py", ".yaml", ".yml", ".json", ".toml", ".txt"}:
                 continue
@@ -131,7 +126,7 @@ class RepositoryContractTests(unittest.TestCase):
     def test_source_prompt_snapshots_are_present(self):
         expected = {
             "global-AGENTS.md": "4510de771fbf41d65ff6601c5d0f2b82fee991bafde4e675c869cc19de3f0bf4",
-            "project-AGENTS.md": "66aa549c7573a8b000c5b233f73f40fce980c57ce60ca4ce996e43920a520e35",
+            "project-AGENTS.md": "b76c4e76b696a23b5e8aa5e79337305b06ab47bbcee9fdb626ef45eca1042157",
         }
         for filename, digest in expected.items():
             content = (ROOT / "prompts" / filename).read_bytes()

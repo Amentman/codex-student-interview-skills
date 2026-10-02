@@ -28,7 +28,7 @@
 codex plugin marketplace add Amentman/codex-student-interview-skills
 ```
 
-然后在 Codex 中打开 `/plugins`，从“寂辉校招面试 Skills”来源安装 `codex-student-interview-skills`，并新开一个会话使 Skill 生效。私有仓库需要先获得仓库访问权限。
+然后在 Codex 中打开 `/plugins`，从“寂辉校招职业规划与面试 Skills”来源安装 `codex-student-interview-skills`，并新开一个会话使 Skill 生效。本仓库为公开仓库，安装者仍需自行配置飞书、本地文件和其他外部工具权限。
 
 ### 只安装 Skill
 
