@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "codex-student-interview-skills",
-  "version": "0.1.0",
-  "description": "Evidence-grounded student interview preparation, real-interview review, and Feishu delivery workflows for Codex.",
+  "version": "0.2.0",
+  "description": "Evidence-grounded student career planning, interview preparation, real-interview review, and Feishu delivery workflows for Codex.",
   "author": {
     "name": "寂辉 Amant",
     "url": "https://github.com/Amentman"
@@ -19,13 +19,14 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "寂辉校招面试 Skills",
-        "shortDescription": "通用模拟、专岗准备、真实面试复盘与证据化交付",
-        "longDescription": "把学生简历、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可训练且可验收的面试材料。",
+        "displayName": "寂辉校招职业规划与面试 Skills",
+        "shortDescription": "职业规划、通用模拟、专岗准备与真实面试复盘",
+        "longDescription": "把学生简历、问卷、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可执行、可训练且可验收的交付材料。",
         "developerName": "寂辉 Amant",
         "category": "Productivity",
         "capabilities": ["Read", "Write"],
         "defaultPrompt": [
+          "为这位学生制作一份证据可追溯的职业规划，包含方向、公司池、项目补强、简历分版和投递节奏。",
           "为这位学生准备一套证据可追溯的通用模拟面试材料。",
           "根据公司和 JD 生成独立的专岗面试准备页。",
           "根据真实面试逐字稿做逐题复盘，不改通用页面和原简历。"

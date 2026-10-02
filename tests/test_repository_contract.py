@@ -10,9 +10,10 @@ SKILLS = ROOT / "skills"
 
 
 class RepositoryContractTests(unittest.TestCase):
-    def test_plugin_contains_complete_interview_skill_suite(self):
+    def test_plugin_contains_complete_student_delivery_skill_suite(self):
         expected = {
             "building-resume-interview-stories",
+            "delivering-student-career-plans",
             "recording-processing",
             "student-mock-interview-delivery",
             "student-role-interview-prep",

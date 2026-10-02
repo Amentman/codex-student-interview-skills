@@ -1,11 +1,12 @@
-# 寂辉校招面试 Skills
+# 寂辉校招职业规划与面试 Skills
 
-一套面向 Codex 的校招面试交付插件。核心目标不是生成通用题库，而是把学生简历、JD、面试邀约和真实逐字稿转成有证据、可训练、可验收的材料，并保护既有飞书页面与学生事实边界。
+一套面向 Codex 的校招职业规划与面试交付插件。核心目标是把学生简历、问卷、JD、面试邀约和真实逐字稿转成有证据、可执行、可训练、可验收的材料，并保护既有飞书页面与学生事实边界。
 
 ## 包含内容
 
 | Skill | 用途 |
 | --- | --- |
+| `delivering-student-career-plans` | 学生职业规划、方向梯度、公司池、项目补强、简历分版与投递时间线 |
 | `student-mock-interview-delivery` | 无明确公司/JD时的通用模拟面试双端交付 |
 | `student-role-interview-prep` | 已有公司、岗位、JD或邀约时的面试前专岗准备 |
 | `student-interview-review-delivery` | 真实面试结束后的逐字稿逐题复盘与训练任务 |
@@ -53,6 +54,7 @@ Skill 不包含飞书凭据、学生数据、真实简历、逐字稿、私有�
 
 ```bash
 python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s skills/delivering-student-career-plans/tests -v
 python3 -m unittest discover -s skills/student-mock-interview-delivery/tests -v
 python3 -m unittest discover -s skills/student-interview-review-delivery/tests -v
 python3 -m unittest discover -s skills/visual-document-delivery/tests -v

@@ -1,0 +1,6 @@
+interface:
+  display_name: "学生职业规划交付"
+  short_description: "先对焦方向与架构，再交付岗位、薪资、公司池、项目和投递闭环"
+  default_prompt: "Use $delivering-student-career-plans to align the plan structure first when needed, then create a concise, evidence-grounded student career plan with viable roles, salary references, concrete company pools, project-before-resume sequencing, visuals, and verified Feishu delivery."
+policy:
+  allow_implicit_invocation: true
