@@ -41,11 +41,13 @@ class RepositoryContractTests(unittest.TestCase):
                 self.assertFalse(target.startswith("/"), f"absolute link in {markdown}: {target}")
                 self.assertTrue((markdown.parent / target).resolve().is_file(), f"missing link in {markdown}: {target}")
 
-    def test_interview_review_requests_route_to_the_dedicated_skill(self):
+    def test_interview_review_requests_route_to_the_integrated_mock_skill(self):
         mock_text = (SKILLS / "student-mock-interview-delivery" / "SKILL.md").read_text(encoding="utf-8")
         role_text = (SKILLS / "student-role-interview-prep" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("student-interview-review-delivery", mock_text)
-        self.assertIn("student-interview-review-delivery", role_text)
+        recording = (SKILLS / "recording-processing" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("通用模拟与实际面试复盘继续由本 Skill 处理", mock_text)
+        self.assertIn("student-mock-interview-delivery", role_text)
+        self.assertIn("student-mock-interview-delivery", recording)
 
     def test_discovery_metadata_keeps_the_three_core_routes_distinct(self):
         mock_ui = (SKILLS / "student-mock-interview-delivery" / "agents" / "openai.yaml").read_text(encoding="utf-8")
@@ -53,9 +55,9 @@ class RepositoryContractTests(unittest.TestCase):
         stories = (SKILLS / "building-resume-interview-stories" / "SKILL.md").read_text(encoding="utf-8")
         mock_contract = (SKILLS / "student-mock-interview-delivery" / "references" / "interview-content-contract.md").read_text(encoding="utf-8")
 
-        self.assertNotIn("实际面试转写稿", mock_ui)
-        self.assertNotIn("可选复盘", mock_ui)
-        self.assertIn("student-interview-review-delivery", recording)
+        self.assertIn("实际面试转写稿", mock_ui)
+        self.assertIn("可选复盘", mock_ui)
+        self.assertIn("student-mock-interview-delivery", recording)
         self.assertIn("student-role-interview-prep", stories)
         self.assertIn("student-mock-interview-delivery", stories)
         self.assertNotIn("有真实公司与 JD 时才增加", mock_contract)

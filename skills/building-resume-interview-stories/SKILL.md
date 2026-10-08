@@ -1,6 +1,6 @@
 ---
 name: building-resume-interview-stories
-description: Use when a bounded request needs evidence-grounded resume bullets, JD mapping, project explanation, STAR stories, interview questions, interview scripts, company research, or a consolidated Markdown preparation packet; full student mock-interview, role-specific delivery, and real-interview review use their dedicated Skills.
+description: Turn internship, work, project, resume, or JD material into evidence-grounded job-search stories. Use for 简历诊断/优化, JD 定向改写, STAR bullets, project explanation, company research, interview questions, interview scripts, or a consolidated Markdown preparation packet; full mock-interview delivery and real-interview review use student-mock-interview-delivery, while company/JD-specific preparation uses student-role-interview-prep.
 ---
 
 # Building Resume Interview Stories
@@ -11,7 +11,7 @@ Build the story from evidence outward: facts first, business meaning second, res
 
 ## Route the Request
 
-本 Skill 提供履历证据与表达方法，不抢完整学生交付的主路由：通用模拟面试使用 `student-mock-interview-delivery`，明确公司/JD的面试前准备使用 `student-role-interview-prep`，真实已发生面试的逐字稿复盘使用 `student-interview-review-delivery`。只有用户明确要求简历或故事本身时，才由本 Skill 主导。
+本 Skill 提供履历证据与表达方法，不抢完整学生交付的主路由：通用模拟面试与实际面试复盘使用 `student-mock-interview-delivery`，明确公司／JD 的面试前准备使用 `student-role-interview-prep`。只有用户明确要求简历、故事或有限题组本身时，才由本 Skill 主导。
 
 | User asks for | Required references | Deliverable |
 | --- | --- | --- |
@@ -117,9 +117,13 @@ Generate questions from claims that appear in the resume, not from an unrelated 
 For each question provide:
 
 - interviewer's intent;
+- expression mode: personal experience, transfer, role knowledge, or scenario reasoning;
 - answer framework;
+- S/K evidence or scenario basis;
 - natural reference answer;
 - truth boundary or fact to personalize when needed.
+
+Before drafting answers, build reusable S story anchors from Confirmed evidence and K role-knowledge anchors from the target workflow. A K anchor may fully explain work the candidate has not personally done; that is useful teaching content, not fabrication, as long as the answer uses transfer, knowledge, or hypothetical wording instead of claiming personal ownership.
 
 ### 10. Package the Output
 

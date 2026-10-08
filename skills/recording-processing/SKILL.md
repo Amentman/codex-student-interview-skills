@@ -1,14 +1,14 @@
 ---
 name: recording-processing
 description: |
-  录音处理（通用版）：用于会议、见客户、上课、语音备忘的转写稿整理与六大知识库分流；真实已发生面试的逐题复盘不使用本 Skill，改用 student-interview-review-delivery。
+  录音处理（通用版）：把会议、见客户、上课、语音备忘的转写稿，自动提取有价值的信息，分流进你的知识库六大库；真实已发生面试的逐题复盘由 student-mock-interview-delivery 处理。
   触发方式：「处理录音」「整理逐字稿」「处理转写稿」「把这段录音入库」
   Recording processor: extracts insights from transcripts and files them into your 6-folder knowledge base.
 ---
 
 # 录音处理（通用版）
 
-**路由边界：** 用户要复盘真实公司/正式面试、逐题分析学生回答或生成下一轮训练任务时，使用 `student-interview-review-delivery`。除非用户另行明确要求知识库沉淀，本 Skill 不参与该复盘，也不自动把面试逐字稿写进六大库。
+**路由边界：** 用户要复盘真实公司／正式面试、逐题分析学生回答或生成下一轮训练任务时，使用 `student-mock-interview-delivery`。除非用户另行明确要求知识库沉淀，本 Skill 不自动把面试逐字稿写进六大库。
 
 > 版本：v1.0 学员版（由寂辉实战版提炼）
 > 一句话：你只管说话录音，转写稿丢给我，有价值的信息自动进你的知识库。

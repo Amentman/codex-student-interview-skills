@@ -7,12 +7,12 @@
 | Skill | 用途 |
 | --- | --- |
 | `delivering-student-career-plans` | 学生职业规划、方向梯度、公司池、项目补强、简历分版与投递时间线 |
-| `student-mock-interview-delivery` | 无明确公司/JD时的通用模拟面试双端交付 |
+| `student-mock-interview-delivery` | 无明确公司/JD时的通用模拟面试双端交付，以及真实面试逐字稿复盘 |
 | `student-role-interview-prep` | 已有公司、岗位、JD或邀约时的面试前专岗准备 |
-| `student-interview-review-delivery` | 真实面试结束后的逐字稿逐题复盘与训练任务 |
+| `student-interview-review-delivery` | 保留兼容的独立复盘流程；新交付优先使用已整合复盘能力的 `student-mock-interview-delivery` |
 | `building-resume-interview-stories` | 简历、项目、JD与面试故事的证据化组织方法 |
 | `visual-document-delivery` | 复杂飞书、Word、PDF、Markdown文档的图解与渲染验收 |
-| `recording-processing` | 通用录音整理与知识库分流；不会被真实面试复盘自动调用 |
+| `recording-processing` | 通用录音整理与知识库分流；模拟面试 Skill 可调用它提取真实面试转写证据 |
 
 `prompts/` 保存了仓库制作时使用的全局与校招项目提示词原始快照；根目录 `AGENTS.md` 是去除本机绝对路径后的可移植项目入口。
 

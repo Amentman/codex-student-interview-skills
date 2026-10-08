@@ -20,12 +20,12 @@ TEACHER_SECTIONS = (
     "老师快速上手", "候选人业务主线", "三档匹配 JD", "JD逐条证据矩阵",
     "面试准备度与建议模式", "口述能力四级评分", "实习履历大白话拆解",
     "项目地图与必做产物", "数值反推", "职责边界", "事实账本",
-    "个性化锚点清单", "核心经历深挖覆盖", "数值成果来源索引",
+    "个性化锚点清单", "故事证据与岗位补充", "核心经历深挖覆盖", "数值成果来源索引",
     "核心项目架构／图解", "模拟面试流程", "模拟面试问题与带教指引", "课后反馈模板",
 )
 STUDENT_SECTIONS = (
     "如何使用这份材料", "核心定位", "三档匹配 JD",
-    "项目地图", "术语大白话卡", "指标口径扫盲", "岗位与行业知识",
+    "项目地图", "术语大白话卡", "指标口径扫盲", "岗位与行业知识", "故事证据与岗位补充",
     "核心项目架构／图解", "面试问题与个人逐字稿", "面试前任务",
 )
 QUESTION_CATEGORIES = (
@@ -35,11 +35,11 @@ QUESTION_CATEGORIES = (
     ("第四部分｜岗位专业题", 4),
 )
 TEACHER_FIELDS = (
-    "考察目标", "合格回答要素", "候选人可用素材", "参考回答方向",
+    "考察目标", "表达类型", "合格回答要素", "候选人可用素材", "岗位场景补充", "参考回答方向",
     "继续追问", "常见问题", "反馈建议",
 )
 STUDENT_FIELDS = (
-    "考察点", "你的答题主线", "可用素材", "参考模板", "我的逐字稿", "答题提示",
+    "考察点", "表达类型", "你的答题主线", "事实或场景依据", "参考表达", "我的版本", "答题提示",
 )
 TIER_FIELDS = ("岗位日常", "匹配证据", "差距", "档位原因", "投递建议")
 TIER_CARD_RE = re.compile(r"^###\s+(90%|80%|70%)｜(主投|稳妥拓展|进阶尝试)｜(.+)$")
@@ -63,8 +63,15 @@ POST_SESSION_MARKERS = (
 )
 MIN_QUESTIONS = 22
 MAX_QUESTIONS = 32
-MIN_STUDENT_TEMPLATE = 100
-MAX_STUDENT_TEMPLATE = 450
+EXPRESSION_TYPES = ("亲历表达", "迁移表达", "岗位知识", "场景推演")
+MIN_STUDENT_REFERENCE = 24
+MAX_STUDENT_REFERENCE = 450
+STORY_FIELDS = (
+    "来源", "场景／目标", "本人动作", "产物／结果", "职责边界", "失败／取舍", "学生原话／口述状态", "Open",
+)
+KNOWLEDGE_FIELDS = (
+    "岗位通常怎么做", "为什么这样做", "常见例外／风险", "指标／验收", "与学生经历的连接", "表达边界",
+)
 VISUAL_SECTION_MARKERS = ("图解", "架构", "看图", "看懂")
 METRIC_CARD_RE = re.compile(r"^###\s+指标(\d+)｜(.+)$")
 METRIC_CARD_FIELDS = ("大白话", "怎么算／怎么看", "为什么重要", "容易误判", "候选人边界")
@@ -239,6 +246,42 @@ def validate_anchors(text, errors):
         errors.append("老师版 个性化锚点清单至少需要 1 条 Confirmed 锚点")
 
 
+def validate_story_knowledge_anchors(text, label, errors):
+    """Validate reusable personal stories (S) and role knowledge (K)."""
+    lines = text.splitlines()
+    span = exact_section(lines, 2, "故事证据与岗位补充")
+    if span is None:
+        return set(), set()
+    section = lines[span[0] + 1:span[1]]
+    starts = [
+        index for index, line in enumerate(section)
+        if re.match(r"^###\s+[SK]\d+｜", line.strip())
+    ]
+    story_ids = set()
+    knowledge_ids = set()
+    for position, start in enumerate(starts):
+        heading = section[start].strip()
+        match = re.match(r"^###\s+([SK]\d+)｜(.+)$", heading)
+        if match is None:
+            continue
+        anchor_id = match.group(1)
+        target = story_ids if anchor_id.startswith("S") else knowledge_ids
+        if anchor_id in target:
+            errors.append(f"{label}故事证据与岗位补充存在重复锚点: {anchor_id}")
+        target.add(anchor_id)
+        end = starts[position + 1] if position + 1 < len(starts) else len(section)
+        block = "\n".join(section[start:end])
+        fields = STORY_FIELDS if anchor_id.startswith("S") else KNOWLEDGE_FIELDS
+        missing = [field for field in fields if not field_value(block, field)]
+        if missing:
+            errors.append(f"{label} {anchor_id} 锚点缺少字段: {', '.join(missing)}")
+    if not story_ids:
+        errors.append(f"{label}故事证据与岗位补充至少需要 1 个 S 故事锚点")
+    if not knowledge_ids:
+        errors.append(f"{label}故事证据与岗位补充至少需要 1 个 K 岗位知识锚点")
+    return story_ids, knowledge_ids
+
+
 def validate_core_experiences(text, errors):
     lines = text.splitlines()
     span = exact_section(lines, 2, "核心经历深挖覆盖")
@@ -386,7 +429,11 @@ def validate_visual_order(text, boundary_section_title, label, errors):
         errors.append(f"{label}项目图解必须位于{boundary_label}之前，不能在面试开始后补图")
 
 
-def extract_and_validate_questions(text, section_title, side, errors):
+def extract_and_validate_questions(
+    text, section_title, side, errors, story_ids=None, knowledge_ids=None
+):
+    story_ids = story_ids or set()
+    knowledge_ids = knowledge_ids or set()
     lines = text.splitlines()
     span = exact_section(lines, 2, section_title)
     if span is None:
@@ -402,21 +449,53 @@ def extract_and_validate_questions(text, section_title, side, errors):
         errors.append(f"{side}题目编号必须从题目1开始连续且不重复")
 
     missing_fields = []
-    short_templates = []
-    long_templates = []
-    duplicate_templates = {}
+    short_references = []
+    long_references = []
+    duplicate_references = {}
     for match, block in cards:
         qid = f"题目{match.group(1)}"
         fields = TEACHER_FIELDS if side == "老师版" else STUDENT_FIELDS
         missing = []
         for field in fields:
-            if side == "学生版" and field == "我的逐字稿":
+            if side == "学生版" and field == "我的版本":
                 if not field_present(block, field):
                     missing.append(field)
             elif not field_value(block, field):
                 missing.append(field)
         if missing:
             missing_fields.append(f"{qid}({','.join(missing)})")
+
+        expression_type = field_value(block, "表达类型") or ""
+        if expression_type and expression_type not in EXPRESSION_TYPES:
+            errors.append(
+                f"{side} {qid} 表达类型无效: {expression_type}；"
+                f"只能使用 {'、'.join(EXPRESSION_TYPES)}"
+            )
+
+        if side == "老师版":
+            basis = "\n".join((
+                field_value(block, "候选人可用素材") or "",
+                field_value(block, "岗位场景补充") or "",
+            ))
+        else:
+            basis = field_value(block, "事实或场景依据") or ""
+        referenced_stories = set(re.findall(r"\bS\d+\b", basis))
+        referenced_knowledge = set(re.findall(r"\bK\d+\b", basis))
+        unknown_stories = referenced_stories - story_ids
+        unknown_knowledge = referenced_knowledge - knowledge_ids
+        if unknown_stories:
+            errors.append(f"{side} {qid} 引用了不存在的 S 锚点: {', '.join(sorted(unknown_stories))}")
+        if unknown_knowledge:
+            errors.append(f"{side} {qid} 引用了不存在的 K 锚点: {', '.join(sorted(unknown_knowledge))}")
+        if expression_type == "亲历表达" and not referenced_stories:
+            errors.append(f"{side} {qid} 亲历表达必须引用至少 1 个 S 锚点")
+        elif expression_type == "迁移表达":
+            if not referenced_stories:
+                errors.append(f"{side} {qid} 迁移表达必须引用至少 1 个 S 锚点")
+            if not referenced_knowledge:
+                errors.append(f"{side} {qid} 迁移表达必须引用至少 1 个 K 锚点")
+        elif expression_type in {"岗位知识", "场景推演"} and not referenced_knowledge:
+            errors.append(f"{side} {qid} {expression_type}必须引用至少 1 个 K 锚点")
 
         if side == "老师版":
             followup = field_value(block, "继续追问") or ""
@@ -425,36 +504,47 @@ def extract_and_validate_questions(text, section_title, side, errors):
             if visible_length(field_value(block, "参考回答方向") or "") < 24:
                 errors.append(f"老师版 {qid} 的参考回答方向过短")
         else:
-            template = field_value(block, "参考模板") or ""
-            length = visible_length(template)
-            if length < MIN_STUDENT_TEMPLATE:
-                short_templates.append(qid)
-            if length > MAX_STUDENT_TEMPLATE:
-                long_templates.append(qid)
-            normalized = re.sub(r"[\W_]", "", template).lower()
+            reference = field_value(block, "参考表达") or ""
+            length = visible_length(reference)
+            if length < MIN_STUDENT_REFERENCE:
+                short_references.append(qid)
+            if length > MAX_STUDENT_REFERENCE:
+                long_references.append(qid)
+            normalized = re.sub(r"[\W_]", "", reference).lower()
             if normalized:
-                duplicate_templates.setdefault(normalized, []).append(qid)
-            if visible_length(field_value(block, "可用素材") or "") < 12:
-                errors.append(f"学生版 {qid} 的可用素材过短，必须指向具体经历或证据")
+                duplicate_references.setdefault(normalized, []).append(qid)
+            if visible_length(field_value(block, "事实或场景依据") or "") < 8:
+                errors.append(f"学生版 {qid} 的事实或场景依据过短，必须指向 S/K 锚点")
             if visible_length(field_value(block, "答题提示") or "") < 20:
                 errors.append(f"学生版 {qid} 的答题提示过短，必须说明如何改写和验收")
+            if expression_type == "岗位知识" and re.search(r"我(?:当时|曾经|负责|主导|完成)", reference):
+                errors.append(f"学生版 {qid} 的岗位知识不得伪装成个人经历")
+            if expression_type == "场景推演" and not re.search(r"如果|假设|场景|面对", reference):
+                errors.append(f"学生版 {qid} 的场景推演必须明确假设条件")
 
     if missing_fields:
         errors.append(f"{side}问题卡字段不完整: " + ", ".join(missing_fields[:8]))
-    if short_templates:
+    if short_references:
         errors.append(
-            f"学生版参考模板过短（少于 {MIN_STUDENT_TEMPLATE} 个可见字符）: "
-            + ", ".join(short_templates[:8])
+            f"学生版参考表达过短（少于 {MIN_STUDENT_REFERENCE} 个可见字符）: "
+            + ", ".join(short_references[:8])
         )
-    if long_templates:
+    if long_references:
         errors.append(
-            f"学生版参考模板过长（超过 {MAX_STUDENT_TEMPLATE} 个可见字符）: "
-            + ", ".join(long_templates[:8])
+            f"学生版参考表达过长（超过 {MAX_STUDENT_REFERENCE} 个可见字符）: "
+            + ", ".join(long_references[:8])
         )
-    duplicates = [ids for ids in duplicate_templates.values() if len(ids) > 2]
+    duplicates = [ids for ids in duplicate_references.values() if len(ids) > 2]
     if duplicates:
-        errors.append("学生版参考模板重复超过 2 次: " + ", ".join(duplicates[0][:8]))
-    return [(int(match.group(1)), match.group(2).strip()) for match, _ in cards]
+        errors.append("学生版参考表达重复超过 2 次: " + ", ".join(duplicates[0][:8]))
+    return [
+        (
+            int(match.group(1)),
+            match.group(2).strip(),
+            field_value(block, "表达类型") or "",
+        )
+        for match, block in cards
+    ]
 
 
 def main():
@@ -503,6 +593,9 @@ def main():
         teacher_tiers = validate_tiers(teacher_text, "老师版", errors)
         validate_jd_matrix(teacher_text, errors)
         validate_anchors(teacher_text, errors)
+        teacher_story_ids, teacher_knowledge_ids = validate_story_knowledge_anchors(
+            teacher_text, "老师版", errors
+        )
         validate_core_experiences(teacher_text, errors)
         if not has_resume_link(teacher_text, resume, teacher_path):
             errors.append(f"老师版前 25 个非空行未包含简历 Markdown 链接: {resume.name}")
@@ -511,7 +604,8 @@ def main():
                 if marker not in teacher_text:
                     errors.append(f"老师版缺少 {args.track} 路线标记: {marker}")
         teacher_questions = extract_and_validate_questions(
-            teacher_text, "模拟面试问题与带教指引", "老师版", errors
+            teacher_text, "模拟面试问题与带教指引", "老师版", errors,
+            teacher_story_ids, teacher_knowledge_ids,
         )
         validate_visual_order(
             teacher_text, "模拟面试流程", "老师版", errors
@@ -524,13 +618,17 @@ def main():
     if student_text:
         require_sections(student_text, STUDENT_SECTIONS, "学生版", errors)
         student_tiers = validate_tiers(student_text, "学生版", errors)
+        student_story_ids, student_knowledge_ids = validate_story_knowledge_anchors(
+            student_text, "学生版", errors
+        )
         validate_metric_primer(
             student_text,
             errors,
             reference_texts=(teacher_text, student_text),
         )
         student_questions = extract_and_validate_questions(
-            student_text, "面试问题与个人逐字稿", "学生版", errors
+            student_text, "面试问题与个人逐字稿", "学生版", errors,
+            student_story_ids, student_knowledge_ids,
         )
         validate_visual_order(
             student_text, "面试问题与个人逐字稿", "学生版", errors
@@ -540,8 +638,13 @@ def main():
             if marker in student_text:
                 errors.append(f"学生版包含内部禁用标记: {marker}")
 
-    if teacher_questions and student_questions and teacher_questions != student_questions:
-        errors.append("老师版与学生版的题目标题或顺序不一致")
+    if teacher_questions and student_questions:
+        teacher_titles = [(number, title) for number, title, _ in teacher_questions]
+        student_titles = [(number, title) for number, title, _ in student_questions]
+        if teacher_titles != student_titles:
+            errors.append("老师版与学生版的题目标题或顺序不一致")
+        elif [mode for _, _, mode in teacher_questions] != [mode for _, _, mode in student_questions]:
+            errors.append("老师版与学生版的表达类型不一致")
     if teacher_tiers and student_tiers and teacher_tiers != student_tiers:
         errors.append("老师版与学生版三档匹配 JD 的岗位或顺序不一致")
 

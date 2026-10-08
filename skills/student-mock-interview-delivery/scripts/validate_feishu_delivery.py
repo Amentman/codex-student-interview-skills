@@ -19,6 +19,7 @@ from validate_delivery import (
     validate_jd_matrix,
     validate_metric_primer,
     validate_no_visual_placeholders,
+    validate_story_knowledge_anchors,
     validate_tiers,
     validate_visual_order,
 )
@@ -58,6 +59,34 @@ def fetch_document(doc, doc_format, detail):
         raise RuntimeError("lark-cli returned an invalid document payload") from exc
 
 
+def fetch_wiki_data(command):
+    result = subprocess.run(command, text=True, capture_output=True)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "unknown lark-cli error")
+    try:
+        payload = json.loads(result.stdout[result.stdout.index("{"):])
+        if payload.get("ok") is not True:
+            raise RuntimeError(payload.get("error", {}).get("message") or "lark-cli returned ok=false")
+        return payload["data"]
+    except (ValueError, KeyError, TypeError) as exc:
+        raise RuntimeError("lark-cli returned an invalid wiki payload") from exc
+
+
+def fetch_wiki_node(token, space_id):
+    return fetch_wiki_data([
+        "lark-cli", "wiki", "+node-get", "--node-token", token,
+        "--space-id", space_id, "--as", "user", "--format", "json",
+    ])
+
+
+def list_wiki_children(node_token, space_id):
+    return fetch_wiki_data([
+        "lark-cli", "wiki", "+node-list", "--space-id", space_id,
+        "--parent-node-token", node_token, "--page-all", "--page-limit", "0",
+        "--as", "user", "--format", "json",
+    ])["nodes"]
+
+
 def parse_document_xml(content, label, errors):
     fragment = content.strip()
     if fragment.startswith("<?xml"):
@@ -89,7 +118,9 @@ def node_text(node):
 
 
 def visual_has_token(node):
-    token_names = {"token", "file_token", "image_token", "src"}
+    token_names = {"token", "file_token", "image_token"}
+    if local_name(node.tag) in {"img", "image"}:
+        token_names.add("src")
     for current in node.iter():
         for key, value in current.attrib.items():
             if local_name(key) in token_names and str(value).strip():
@@ -135,8 +166,8 @@ def validate_page_structure(xml, label, expected_title, visual_boundary_title, e
 
 def validate_remote_documents(
     name,
-    homepage_markdown,
-    homepage_xml,
+    profile_markdown,
+    profile_xml,
     teacher_markdown,
     teacher_xml,
     student_markdown,
@@ -148,12 +179,9 @@ def validate_remote_documents(
     internal_title = f"{name}｜面试指导者版（内部）"
     student_title = f"{name}｜学生面试准备版"
 
-    homepage_title, _ = parse_document_xml(homepage_xml, "学生主页", errors)
-    if homepage_title != name:
-        errors.append(f"学生主页标题应为 {name}，实际为 {homepage_title or '缺失'}")
-    for required_title in (internal_title, student_title):
-        if required_title not in homepage_markdown and required_title not in homepage_xml:
-            errors.append(f"学生主页缺少子页用途或入口: {required_title}")
+    profile_title, _ = parse_document_xml(profile_xml, "学员档案", errors)
+    if profile_title != name:
+        errors.append(f"学员档案标题应为 {name}，实际为 {profile_title or '缺失'}")
 
     for label, text in (("老师版", teacher_markdown), ("学生版", student_markdown)):
         if name not in text:
@@ -166,12 +194,16 @@ def validate_remote_documents(
     teacher_tiers = validate_tiers(teacher_markdown, "老师版", errors)
     validate_jd_matrix(teacher_markdown, errors)
     validate_anchors(teacher_markdown, errors)
+    teacher_story_ids, teacher_knowledge_ids = validate_story_knowledge_anchors(
+        teacher_markdown, "老师版", errors
+    )
     validate_core_experiences(teacher_markdown, errors)
     for marker in TRACK_MARKERS[track]:
         if marker not in teacher_markdown:
             errors.append(f"老师版缺少 {track} 路线标记: {marker}")
     teacher_questions = extract_and_validate_questions(
-        teacher_markdown, "模拟面试问题与带教指引", "老师版", errors
+        teacher_markdown, "模拟面试问题与带教指引", "老师版", errors,
+        teacher_story_ids, teacher_knowledge_ids,
     )
     validate_visual_order(
         teacher_markdown, "模拟面试流程", "老师版", errors
@@ -180,13 +212,17 @@ def validate_remote_documents(
 
     require_sections(student_markdown, STUDENT_SECTIONS, "学生版", errors)
     student_tiers = validate_tiers(student_markdown, "学生版", errors)
+    student_story_ids, student_knowledge_ids = validate_story_knowledge_anchors(
+        student_markdown, "学生版", errors
+    )
     validate_metric_primer(
         student_markdown,
         errors,
         reference_texts=(teacher_markdown, student_markdown),
     )
     student_questions = extract_and_validate_questions(
-        student_markdown, "面试问题与个人逐字稿", "学生版", errors
+        student_markdown, "面试问题与个人逐字稿", "学生版", errors,
+        student_story_ids, student_knowledge_ids,
     )
     validate_visual_order(
         student_markdown, "面试问题与个人逐字稿", "学生版", errors
@@ -196,8 +232,13 @@ def validate_remote_documents(
         if marker in student_markdown:
             errors.append(f"学生版包含内部禁用标记: {marker}")
 
-    if teacher_questions and student_questions and teacher_questions != student_questions:
-        errors.append("老师版与学生版的题目标题或顺序不一致")
+    if teacher_questions and student_questions:
+        teacher_titles = [(number, title) for number, title, _ in teacher_questions]
+        student_titles = [(number, title) for number, title, _ in student_questions]
+        if teacher_titles != student_titles:
+            errors.append("老师版与学生版的题目标题或顺序不一致")
+        elif [mode for _, _, mode in teacher_questions] != [mode for _, _, mode in student_questions]:
+            errors.append("老师版与学生版的表达类型不一致")
     if teacher_tiers and student_tiers and teacher_tiers != student_tiers:
         errors.append("老师版与学生版三档匹配 JD 的岗位或顺序不一致")
 
@@ -218,19 +259,87 @@ def validate_remote_documents(
     return errors
 
 
+def validate_wiki_hierarchy(name, profile, internal, student, children, archive_root):
+    errors = []
+    profile_token = profile.get("node_token")
+    if profile.get("parent_node_token") != archive_root:
+        errors.append("学员档案必须位于学员档案总目录直属层级")
+    if profile.get("title") != name:
+        errors.append(f"学员档案节点标题应为 {name}")
+    for label, node, expected_title in (
+        ("老师版", internal, f"{name}｜面试指导者版（内部）"),
+        ("学生版", student, f"{name}｜学生面试准备版"),
+    ):
+        if node.get("parent_node_token") != profile_token:
+            errors.append(f"{label}必须是学员档案的直属子页")
+        if node.get("title") != expected_title:
+            errors.append(f"{label}节点标题应为 {expected_title}")
+        matches = [child for child in children if child.get("title") == expected_title]
+        if len(matches) != 1 or matches[0].get("node_token") != node.get("node_token"):
+            errors.append(f"{label}在学员档案下必须唯一且与目标节点一致")
+    if any(child.get("title") == name for child in children):
+        errors.append("学员档案下仍有同名中间页")
+    return errors
+
+
+def validate_global_uniqueness(name, profile, archive_siblings, old_root_children, old_role_children):
+    errors = []
+    profiles = [node for node in archive_siblings if node.get("title") == name]
+    if len(profiles) != 1 or profiles[0].get("node_token") != profile.get("node_token"):
+        errors.append("学员档案总目录下存在同名学员档案重复或目标不一致")
+
+    role_titles = {
+        f"{name}｜面试指导者版（内部）",
+        f"{name}｜学生面试准备版",
+        "01｜面试指导者版（内部）",
+        "02｜学生面试准备版（可分享）",
+    }
+    if any(node.get("title") in role_titles for node in old_root_children + old_role_children):
+        errors.append("旧目录仍有活跃同角色页；先处理重复，不得新建或覆盖")
+    return errors
+
+
+def validate_profile_footer(xml, internal_token, student_token):
+    errors = []
+    _, body = parse_document_xml(xml, "学员档案", errors)
+    headings = [
+        index for index, block in enumerate(body)
+        if local_name(block.tag) == "h2" and node_text(block) == "模拟面试交付入口"
+    ]
+    if len(headings) != 1:
+        errors.append("学员档案正文末尾必须有且只有一个“模拟面试交付入口”章节")
+        return errors
+    start = headings[0]
+    if any(local_name(block.tag) in {"h1", "h2"} for block in body[start + 1:]):
+        errors.append("模拟面试交付入口必须位于学员台账最后一节")
+    links = [
+        node.attrib.get("href", "")
+        for block in body[start + 1:] for node in block.iter()
+        if local_name(node.tag) == "a"
+    ]
+    if not any(f"/wiki/{internal_token}" in href for href in links):
+        errors.append("学员档案末尾的老师版链接未指向目标页面")
+    if not any(f"/wiki/{student_token}" in href for href in links):
+        errors.append("学员档案末尾的学生版链接未指向目标页面")
+    return errors
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", required=True)
-    parser.add_argument("--homepage", required=True)
+    parser.add_argument("--profile", required=True, help="学员档案 Wiki URL/token")
     parser.add_argument("--internal", required=True)
     parser.add_argument("--student", required=True)
+    parser.add_argument("--space-id", required=True, help="Wiki space_id from runtime configuration")
+    parser.add_argument("--archive-root", required=True, help="学员档案总目录 Wiki node token")
+    parser.add_argument("--old-mock-root", required=True, help="旧模拟面试目录 Wiki node token")
     parser.add_argument("--track", required=True, choices=tuple(TRACK_MARKERS))
     parser.add_argument("--forbid-name", action="append", default=[])
     args = parser.parse_args()
 
     errors = []
     documents = {
-        "homepage": args.homepage,
+        "profile": args.profile,
         "internal": args.internal,
         "student": args.student,
     }
@@ -248,11 +357,38 @@ def main():
                 break
 
     if not errors:
+        try:
+            profile_node = fetch_wiki_node(args.profile, args.space_id)
+            internal_node = fetch_wiki_node(args.internal, args.space_id)
+            student_node = fetch_wiki_node(args.student, args.space_id)
+            children = list_wiki_children(profile_node["node_token"], args.space_id)
+            archive_siblings = list_wiki_children(args.archive_root, args.space_id)
+            old_root_children = list_wiki_children(args.old_mock_root, args.space_id)
+            old_role_children = [
+                child
+                for old_home in old_root_children if old_home.get("title") == args.name
+                for child in list_wiki_children(old_home["node_token"], args.space_id)
+            ]
+            errors.extend(validate_wiki_hierarchy(
+                args.name, profile_node, internal_node, student_node, children,
+                args.archive_root,
+            ))
+            errors.extend(validate_global_uniqueness(
+                args.name, profile_node, archive_siblings, old_root_children, old_role_children,
+            ))
+            errors.extend(validate_profile_footer(
+                snapshots["profile"]["xml"],
+                internal_node["node_token"], student_node["node_token"],
+            ))
+        except (RuntimeError, KeyError) as exc:
+            errors.append(f"飞书层级读回失败: {exc}")
+
+    if not errors:
         errors.extend(
             validate_remote_documents(
                 args.name,
-                snapshots["homepage"]["markdown"],
-                snapshots["homepage"]["xml"],
+                snapshots["profile"]["markdown"],
+                snapshots["profile"]["xml"],
                 snapshots["internal"]["markdown"],
                 snapshots["internal"]["xml"],
                 snapshots["student"]["markdown"],

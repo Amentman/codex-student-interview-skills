@@ -31,8 +31,10 @@ def tier_sections():
 def teacher_card(index, title):
     return f"""#### 题目{index}｜{title}
 **考察目标：** 判断候选人能否围绕真实项目说明问题、个人动作、产物和事实边界。
+**表达类型：** 迁移表达
 **合格回答要素：** 先给结论，再交代场景、本人动作、结果或产物、复盘和岗位关联。
-**候选人可用素材：** 项目 A；本人完成数据清洗、方案比较和分析报告，业务采用范围仍待核实。
+**候选人可用素材：** S01｜项目 A；本人完成数据清洗、方案比较和分析报告，业务采用范围仍待核实。
+**岗位场景补充：** K01｜业务运营通常要先统一口径，再比较方案，并为关键结果保留人工复核。
 **参考回答方向：** 老师重点听候选人是否能把项目 A 从业务问题讲到个人动作，并明确哪些结果能认领、哪些仍需补证，而不是只复述岗位术语。
 **继续追问：** 第一层追具体输入、动作和产物；第二层追 Bad Case、方案取舍、结果归因和职责边界。
 **常见问题：** 容易把团队背景说成个人成绩，或只有方法名，没有真实过程。
@@ -44,10 +46,11 @@ def teacher_card(index, title):
 def student_card(index, title):
     return f"""#### 题目{index}｜{title}
 **考察点：** 证明自己能用真实经历说明判断、个人动作、产物和边界。
+**表达类型：** 迁移表达
 **你的答题主线：** 先回答题目结论，再用项目 A 说明场景、动作、结果，最后回扣目标岗位。
-**可用素材：** 项目 A；数据清洗、两种方案比较、分析报告、字段口径变化的 Bad Case。
-**参考模板：** 对“{title}”这道题，我会先用项目 A 回答。业务方当时需要从口径不稳定的数据中获得可复核的结论，我先核对字段定义和异常记录，再完成数据清洗、两种方案比较和报告交付。能够确认的是我完成了分析过程；业务方最终采用范围仍是〔请补：真实情况和证据〕。这段经历让我形成了先核对口径、再做判断、最后保留事实边界的工作方式。
-**我的逐字稿：**
+**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。
+**参考表达：** 对“{title}”这道题，我没有直接做过完整闭环，但在项目 A 中做过口径核对和方案比较。放到这个岗位，我会先确认目标和指标，再小范围验证，最后保留人工复核。
+**我的版本：**
 **答题提示：** 先把请补项写实，再录音 2 遍；第二遍不得照读，并检查是否出现具体动作、产物和边界。
 
 """
@@ -129,6 +132,25 @@ Confirmed：数据核对、分析和报告。Open：业务采用范围、跨团�
 - Knowledge supplement：指标体系和 Agent 人工兜底属于岗位知识。
 - Open：采用范围、协作方、真实业务结果。
 
+## 故事证据与岗位补充
+### S01｜项目 A：数据口径与方案比较
+**来源：** 简历与项目报告
+**场景／目标：** 业务方需要从口径不稳定的数据中获得可复核结论。
+**本人动作：** 核对字段、清洗数据、比较两种方案并输出分析报告。
+**产物／结果：** 已确认分析报告；最终采用范围仍为 Open。
+**职责边界：** 可认领分析过程，不认领未证实的团队采用和业务结果。
+**失败／取舍：** 字段定义变化导致跨周期不可比，因此优先统一口径。
+**学生原话／口述状态：** 已有事实材料，仍需改成自然口述并补报告名称。
+**Open：** 协作方、报告名称和最终采用证据。
+
+### K01｜业务运营如何把分析变成可执行动作
+**岗位通常怎么做：** 先统一目标和指标口径，再比较方案、小范围验证并复盘。
+**为什么这样做：** 避免口径不同造成伪结论，也避免一次性放大未经验证的方案。
+**常见例外／风险：** 数据量太小、外部环境变化或协作链路过长都会干扰归因。
+**指标／验收：** 同时看结果指标、过程指标和护栏指标，并说明统计窗口。
+**与学生经历的连接：** S01 已做过口径核对和方案比较，可迁移到运营验证。
+**表达边界：** 这是岗位方法，不得说成自己已经完整负责过业务运营闭环。
+
 ## 个性化锚点清单
 - E01｜Confirmed｜简历｜项目 A：清洗数据、比较方案并交付分析报告
 - J01｜Externally verified｜目标 JD｜要求数据分析和跨团队协作
@@ -179,7 +201,7 @@ def full_student():
     return f"""# {NAME}｜学生面试准备版
 
 ## 如何使用这份材料
-先看定位和经历地图，再完成 24 道问题。参考模板只是起步稿：补齐请补项，改成自己的说话方式，完成两遍录音后再脱稿。
+先看定位和经历地图，再完成 24 道问题。参考表达只是起步稿：补齐请补项，改成自己的说话方式，完成两遍录音后再脱稿。
 
 ## 核心定位
 项目 A 证明了数据分析、问题拆解和证据意识；面试中要避免把团队结果或未确认的采用范围说成个人成绩。
@@ -217,6 +239,25 @@ def full_student():
 
 ## 岗位与行业知识
 业务运营不是只交一张表，而是把模糊问题拆成指标，找到原因，提出动作，再用数据验证。AI 适合重复取数、整理和初步分析，人仍负责口径、异常、风险和最终业务判断。
+
+## 故事证据与岗位补充
+### S01｜项目 A：数据口径与方案比较
+**来源：** 简历与项目报告
+**场景／目标：** 业务方需要从口径不稳定的数据中获得可复核结论。
+**本人动作：** 核对字段、清洗数据、比较两种方案并输出分析报告。
+**产物／结果：** 已确认分析报告；最终采用范围仍为 Open。
+**职责边界：** 可认领分析过程，不认领未证实的团队采用和业务结果。
+**失败／取舍：** 字段定义变化导致跨周期不可比，因此优先统一口径。
+**学生原话／口述状态：** 已有事实材料，仍需改成自然口述并补报告名称。
+**Open：** 协作方、报告名称和最终采用证据。
+
+### K01｜业务运营如何把分析变成可执行动作
+**岗位通常怎么做：** 先统一目标和指标口径，再比较方案、小范围验证并复盘。
+**为什么这样做：** 避免口径不同造成伪结论，也避免一次性放大未经验证的方案。
+**常见例外／风险：** 数据量太小、外部环境变化或协作链路过长都会干扰归因。
+**指标／验收：** 同时看结果指标、过程指标和护栏指标，并说明统计窗口。
+**与学生经历的连接：** S01 已做过口径核对和方案比较，可迁移到运营验证。
+**表达边界：** 这是岗位方法，不得说成自己已经完整负责过业务运营闭环。
 
 ## 核心项目架构／图解
 看什么：先看项目的输入、本人动作、输出和校验如何连起来。
@@ -270,17 +311,93 @@ class DeliveryQualityTests(unittest.TestCase):
         self.assertTrue(any("模拟面试问题与带教指引" in error for error in result["errors"]))
 
     def test_rejects_student_card_without_fill_area(self):
-        student = full_student().replace("**我的逐字稿：**\n", "", 1)
+        student = full_student().replace("**我的版本：**\n", "", 1)
         code, result = self.run_validator(full_teacher(), student)
         self.assertEqual(1, code)
-        self.assertTrue(any("我的逐字稿" in error for error in result["errors"]))
+        self.assertTrue(any("我的版本" in error for error in result["errors"]))
 
-    def test_rejects_generic_short_template(self):
-        original = student_card(1, CATEGORIES[0][1][0]).split("**参考模板：** ")[1].split("\n**我的逐字稿")[0]
-        student = full_student().replace(original, "结合真实经历回答即可。", 1)
+    def test_accepts_concise_anchored_reference_expression(self):
+        code, result = self.run_validator(full_teacher(), full_student())
+        self.assertEqual(0, code, result["errors"])
+
+    def test_rejects_student_card_without_expression_type(self):
+        student = full_student().replace("**表达类型：** 迁移表达\n", "", 1)
         code, result = self.run_validator(full_teacher(), student)
         self.assertEqual(1, code)
-        self.assertTrue(any("参考模板过短" in error for error in result["errors"]))
+        self.assertTrue(any("表达类型" in error for error in result["errors"]))
+
+    def test_rejects_invalid_expression_type(self):
+        student = full_student().replace("**表达类型：** 迁移表达", "**表达类型：** 自由发挥", 1)
+        code, result = self.run_validator(full_teacher(), student)
+        self.assertEqual(1, code)
+        self.assertTrue(any("表达类型无效" in error for error in result["errors"]))
+
+    def test_rejects_personal_experience_without_story_anchor(self):
+        student = full_student().replace("**表达类型：** 迁移表达", "**表达类型：** 亲历表达", 1)
+        student = student.replace(
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。",
+            "**事实或场景依据：** K01｜业务运营的口径、验证与人工复核方法。",
+            1,
+        )
+        code, result = self.run_validator(full_teacher(), student)
+        self.assertEqual(1, code)
+        self.assertTrue(any("亲历表达" in error and "S 锚点" in error for error in result["errors"]))
+
+    def test_rejects_transfer_expression_without_knowledge_anchor(self):
+        student = full_student().replace(
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。",
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较。",
+            1,
+        )
+        code, result = self.run_validator(full_teacher(), student)
+        self.assertEqual(1, code)
+        self.assertTrue(any("迁移表达" in error and "K 锚点" in error for error in result["errors"]))
+
+    def test_rejects_teacher_student_expression_type_mismatch(self):
+        student = full_student().replace("**表达类型：** 迁移表达", "**表达类型：** 岗位知识", 1)
+        student = student.replace(
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。",
+            "**事实或场景依据：** K01｜业务运营的口径、验证与人工复核方法。",
+            1,
+        )
+        code, result = self.run_validator(full_teacher(), student)
+        self.assertEqual(1, code)
+        self.assertTrue(any("表达类型不一致" in error for error in result["errors"]))
+
+    def test_accepts_role_knowledge_with_knowledge_anchor_only(self):
+        teacher = full_teacher().replace("**表达类型：** 迁移表达", "**表达类型：** 岗位知识", 1)
+        student = full_student().replace("**表达类型：** 迁移表达", "**表达类型：** 岗位知识", 1)
+        student = student.replace(
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。",
+            "**事实或场景依据：** K01｜业务运营的口径、验证与人工复核方法。",
+            1,
+        )
+        old = student_card(1, CATEGORIES[0][1][0]).split("**参考表达：** ")[1].split("\n**我的版本")[0]
+        student = student.replace(
+            old,
+            "业务运营通常先统一目标和指标口径，再小范围验证方案，最后结合结果指标、过程指标和护栏指标复盘。",
+            1,
+        )
+        code, result = self.run_validator(teacher, student)
+        self.assertEqual(0, code, result["errors"])
+
+    def test_rejects_scenario_reasoning_without_hypothesis(self):
+        teacher = full_teacher().replace("**表达类型：** 迁移表达", "**表达类型：** 场景推演", 1)
+        student = full_student().replace("**表达类型：** 迁移表达", "**表达类型：** 场景推演", 1)
+        student = student.replace(
+            "**事实或场景依据：** S01｜项目 A 的数据清洗和方案比较；K01｜业务运营的口径、验证与人工复核方法。",
+            "**事实或场景依据：** K01｜业务运营的口径、验证与人工复核方法。",
+            1,
+        )
+        old = student_card(1, CATEGORIES[0][1][0]).split("**参考表达：** ")[1].split("\n**我的版本")[0]
+        student = student.replace(
+            old,
+            "先统一目标和指标口径，再小范围验证方案，最后结合结果指标、过程指标和护栏指标复盘。",
+            1,
+        )
+        code, result = self.run_validator(teacher, student)
+        self.assertEqual(1, code)
+        self.assertTrue(any("场景推演必须明确假设条件" in error for error in result["errors"]))
 
     def test_rejects_teacher_student_question_mismatch(self):
         student = full_student().replace("题目24｜信息不足时如何做判断", "题目24｜临时换成另一道题", 1)
