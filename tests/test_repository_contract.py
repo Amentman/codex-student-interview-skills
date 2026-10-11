@@ -102,6 +102,11 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("学生交付", recording_text)
         self.assertIn("飞书", recording_text)
         self.assertIn("no_visual_reason", recording_text)
+        for text in (story_text, recording_text):
+            self.assertIn("姓名｜面试指导者版（内部）", text)
+            self.assertIn("姓名｜学生面试准备版", text)
+            self.assertIn("专岗准备｜公司｜岗位", text)
+            self.assertIn("面试复盘｜公司｜日期", text)
 
     def test_visual_contract_is_target_format_aware(self):
         visual_text = (SKILLS / "visual-document-delivery" / "SKILL.md").read_text(encoding="utf-8")
