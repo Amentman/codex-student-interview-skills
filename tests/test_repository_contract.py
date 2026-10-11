@@ -66,6 +66,32 @@ class RepositoryContractTests(unittest.TestCase):
         for term in required_terms:
             self.assertIn(term, contract, term)
 
+    def test_interview_routes_use_the_shared_page_tree_and_feishu_default(self):
+        mock_text = (SKILLS / "student-mock-interview-delivery" / "SKILL.md").read_text(encoding="utf-8")
+        role_text = (SKILLS / "student-role-interview-prep" / "SKILL.md").read_text(encoding="utf-8")
+        review_text = (SKILLS / "student-interview-review-delivery" / "SKILL.md").read_text(encoding="utf-8")
+
+        for text in (mock_text, role_text, review_text):
+            self.assertIn("学生唯一飞书主页", text)
+            self.assertIn("姓名｜面试指导者版（内部）", text)
+            self.assertIn("姓名｜学生面试准备版", text)
+            self.assertIn("正式、可归档的学生材料默认写入唯一飞书页面", text)
+        self.assertIn("专岗准备｜公司｜岗位", role_text)
+        self.assertIn("面试复盘｜公司｜日期", review_text)
+        self.assertIn("独立子页", role_text)
+        self.assertIn("独立子页", review_text)
+
+    def test_feishu_interview_visuals_require_native_whiteboard_contract(self):
+        reference_paths = (
+            SKILLS / "student-mock-interview-delivery" / "references" / "feishu-delivery-contract.md",
+            SKILLS / "student-role-interview-prep" / "references" / "feishu-boundary-and-acceptance.md",
+            SKILLS / "student-interview-review-delivery" / "references" / "feishu-boundary-and-acceptance.md",
+        )
+        for path in reference_paths:
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("飞书原生画板", text, path)
+            self.assertIn("no_visual_reason", text, path)
+
     def test_discovery_metadata_keeps_the_three_core_routes_distinct(self):
         mock_ui = (SKILLS / "student-mock-interview-delivery" / "agents" / "openai.yaml").read_text(encoding="utf-8")
         recording = (SKILLS / "recording-processing" / "SKILL.md").read_text(encoding="utf-8")
