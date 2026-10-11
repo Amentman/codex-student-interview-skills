@@ -91,6 +91,8 @@ class RepositoryContractTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             self.assertIn("飞书原生画板", text, path)
             self.assertIn("no_visual_reason", text, path)
+        quality_text = (SKILLS / "student-mock-interview-delivery" / "references" / "interview-quality-contract.md").read_text(encoding="utf-8")
+        self.assertNotIn("真实流程图或飞书画板", quality_text)
 
     def test_supporting_workflows_route_student_durable_outputs_to_feishu(self):
         story_text = (SKILLS / "building-resume-interview-stories" / "SKILL.md").read_text(encoding="utf-8")
