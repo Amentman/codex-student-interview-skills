@@ -49,6 +49,23 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("student-mock-interview-delivery", role_text)
         self.assertIn("student-mock-interview-delivery", recording)
 
+    def test_project_contract_defines_feishu_student_delivery_lifecycle(self):
+        project_rules = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        contract = project_rules + "\n" + readme
+        required_terms = (
+            "学生唯一飞书主页",
+            "姓名｜面试指导者版（内部）",
+            "姓名｜学生面试准备版",
+            "专岗准备｜公司｜岗位",
+            "面试复盘｜公司｜日期",
+            "正式、可归档的学生材料默认写入唯一飞书页面",
+            "飞书原生画板",
+            "no_visual_reason",
+        )
+        for term in required_terms:
+            self.assertIn(term, contract, term)
+
     def test_discovery_metadata_keeps_the_three_core_routes_distinct(self):
         mock_ui = (SKILLS / "student-mock-interview-delivery" / "agents" / "openai.yaml").read_text(encoding="utf-8")
         recording = (SKILLS / "recording-processing" / "SKILL.md").read_text(encoding="utf-8")
