@@ -2,6 +2,8 @@
 
 ## Decide from the relationship, not from a desired image count
 
+先区分关系复杂度与目标格式。目标格式决定视觉如何落地：飞书中的关系图、流程图、架构图和时间线使用飞书原生画板；Word、PDF、Markdown、HTML 使用其自身可读的图、表或导出图像。目标格式不改变事实边界，也不取消 `no_visual_reason` 的记录要求。
+
 | Observable relationship | Use | Do not use |
 | --- | --- | --- |
 | Multiple steps, branches, loops, or failure recovery | Flowchart or sequence diagram | A paragraph that hides branches |

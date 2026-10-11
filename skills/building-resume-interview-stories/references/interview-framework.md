@@ -102,9 +102,11 @@ Do not produce robotic memorization text. The answer should be speakable and sho
 
 > The output reached [prototype/internal validation] rather than full production. Productionization would still require [concrete gaps].
 
-## 7. Full Markdown Package
+## 7. Full Package Routing
 
-When requested, use:
+面向学生的完整故事、项目解释或面试准备材料默认写入学生唯一飞书主页下的对应页面；Markdown 仅在用户明确要求本地导出、聊天输出或作为中间草稿时使用。飞书目标页中的复杂关系图使用飞书原生画板，并在写后读回画板块、位置和渲染；简单线性内容记录具体 `no_visual_reason`。
+
+When a local Markdown package is explicitly requested, use:
 
 1. `公司与岗位背景`
 2. `事实清单与待确认项`

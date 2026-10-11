@@ -2,6 +2,8 @@
 
 ## Completion sequence
 
+先锁定目标格式，再按该格式完成结构读回和最终渲染验收；目标格式不同，视觉载体可以不同，但 `no_visual_reason` 和失败状态必须可追溯。
+
 1. Render or export the actual target format.
 2. Read back title hierarchy, visual count, visual position, caption, source, fact boundary, and media identifiers.
 3. Inspect every rendered page or equivalent full surface at normal desktop zoom.
@@ -13,9 +15,10 @@
 
 ### Feishu
 
-- Prefer native tables, callouts, images, and whiteboards that render reliably.
+- 飞书目标页中的流程图、架构图、角色协作图、时间线、关系图和指标图必须使用飞书原生画板；简单线性内容可不配图，但写明具体 `no_visual_reason`。
 - Use `lark-cli` for structural readback when available.
-- Verify non-empty media tokens or `src`, block order, title, caption, and parent section.
+- 读回飞书画板块的非空 token、块顺序、标题、图注、父级章节和实际位置；再导出 PDF 或等价学生端渲染，逐页检查可读性。
+- 外部图片或 Mermaid 只能在明确记录降级原因、保留来源且状态为待确认/未完成时使用，除非用户明确接受降级。
 - Export to PDF or use an equivalent student-facing render for every-page inspection.
 
 ### Word and PDF

@@ -30,6 +30,13 @@ python3 <this-skill-directory>/scripts/validate_visual_manifest.py path/to/visua
 
 Resolve `scripts/...` from this Skill's directory; do not assume the caller's current working directory.
 
+## Target-format visual contract
+
+- 先锁定读者、决策和**目标格式**。相同内容在不同交付面可以使用不同的视觉载体，但不能跳过目标格式的结构读回和最终渲染验收。
+- 如果目标格式是飞书，流程图、架构图、角色协作图、时间线、关系图和指标图必须使用**飞书原生画板**；写后读回画板块、token、位置和所属章节，并检查学生端渲染。外部图片或 Mermaid 只可作为明确记录的降级例外，不能默认当作完成。
+- 如果目标格式是 Word、PDF、Markdown 或 HTML，使用该格式能稳定呈现且可读的图、表或关系结构；不要把飞书画板规则强行套到非飞书输出，也不要用不可渲染的 Mermaid 充当验收证据。
+- 简单线性内容可以没有视觉，但必须在 `visual_contract` 写出具体 `no_visual_reason`；复杂关系即使篇幅很短也不能以“文档短”为理由省略必要图解。
+
 ## When a visual is required
 
 Use the matching visual when the document contains any of these observable signals:

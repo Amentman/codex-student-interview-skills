@@ -92,6 +92,28 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertIn("飞书原生画板", text, path)
             self.assertIn("no_visual_reason", text, path)
 
+    def test_supporting_workflows_route_student_durable_outputs_to_feishu(self):
+        story_text = (SKILLS / "building-resume-interview-stories" / "SKILL.md").read_text(encoding="utf-8")
+        recording_text = (SKILLS / "recording-processing" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("正式、可归档的学生材料默认写入唯一飞书页面", story_text)
+        self.assertIn("学生唯一飞书主页", story_text)
+        self.assertIn("Markdown", story_text)
+        self.assertIn("student-interview-review-delivery", recording_text)
+        self.assertIn("学生交付", recording_text)
+        self.assertIn("飞书", recording_text)
+        self.assertIn("no_visual_reason", recording_text)
+
+    def test_visual_contract_is_target_format_aware(self):
+        visual_text = (SKILLS / "visual-document-delivery" / "SKILL.md").read_text(encoding="utf-8")
+        matrix_text = (SKILLS / "visual-document-delivery" / "references" / "visual-decision-matrix.md").read_text(encoding="utf-8")
+        render_text = (SKILLS / "visual-document-delivery" / "references" / "render-and-acceptance.md").read_text(encoding="utf-8")
+        for text in (visual_text, matrix_text, render_text):
+            self.assertIn("目标格式", text)
+            self.assertIn("no_visual_reason", text)
+        self.assertIn("飞书原生画板", visual_text)
+        self.assertIn("画板块", render_text)
+        self.assertIn("非飞书", visual_text)
+
     def test_discovery_metadata_keeps_the_three_core_routes_distinct(self):
         mock_ui = (SKILLS / "student-mock-interview-delivery" / "agents" / "openai.yaml").read_text(encoding="utf-8")
         recording = (SKILLS / "recording-processing" / "SKILL.md").read_text(encoding="utf-8")

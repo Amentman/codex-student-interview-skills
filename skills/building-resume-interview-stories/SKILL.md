@@ -13,13 +13,15 @@ Build the story from evidence outward: facts first, business meaning second, res
 
 本 Skill 提供履历证据与表达方法，不抢完整学生交付的主路由：通用模拟面试与实际面试复盘使用 `student-mock-interview-delivery`，明确公司／JD 的面试前准备使用 `student-role-interview-prep`。只有用户明确要求简历、故事或有限题组本身时，才由本 Skill 主导。
 
+当本 Skill 的结果面向学生、需要正式归档或作为后续面试训练材料时，正式、可归档的学生材料默认写入唯一飞书页面，具体写入学生唯一飞书主页下的对应页面；不要把完整 Markdown dossier 当作默认终态。明确要求本地 Markdown、聊天回答、导出或只读分析时，才保留这些形式。复杂内容继续图文并茂，简单短答保留具体 `no_visual_reason`。
+
 | User asks for | Required references | Deliverable |
 | --- | --- | --- |
 | Understand the project | `references/intake-and-evidence.md`; add `references/visual-story-contract.md` for a durable explanation with complex relationships | Plain-language business model and workflow |
 | Resume bullets only | Intake reference + `references/resume-framework.md` | 3-5 concise bullets, including a result |
 | Review or optimize a resume | Intake reference + resume reference | JD evidence map, prioritized fixes, rewritten content, and layout QA |
 | Interview preparation | Intake + resume + `references/interview-framework.md` | Resume-linked business/technical Q&A |
-| Complete package | All references, including `references/visual-story-contract.md` | Sourced Markdown dossier |
+| Complete package | All references, including `references/visual-story-contract.md` | Feishu student page by default; Markdown only when explicitly requested or used as an intermediate |
 
 Read each selected reference completely before drafting. Do not load unneeded references.
 
