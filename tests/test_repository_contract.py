@@ -12,12 +12,18 @@ SKILLS = ROOT / "skills"
 class RepositoryContractTests(unittest.TestCase):
     def test_plugin_contains_complete_student_delivery_skill_suite(self):
         expected = {
+            "auditing-candidate-resumes",
             "building-resume-interview-stories",
+            "campus-job-matching",
+            "campus-recommend",
             "delivering-student-career-plans",
+            "designing-student-portfolio-products",
             "recording-processing",
+            "revising-and-delivering-resumes",
             "student-mock-interview-delivery",
             "student-role-interview-prep",
             "student-interview-review-delivery",
+            "student-job-content",
             "visual-document-delivery",
         }
         actual = {path.name for path in SKILLS.iterdir() if (path / "SKILL.md").is_file()}

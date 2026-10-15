@@ -1,0 +1,4 @@
+interface:
+  display_name: "专业求职内容"
+  short_description: "从知识库取材，策划并创作有证据、有活人感的学生求职内容"
+  default_prompt: "Use $student-job-content to plan or write a source-backed Xiaohongshu career post."

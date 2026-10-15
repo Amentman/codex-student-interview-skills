@@ -1,18 +1,18 @@
 {
   "name": "codex-student-interview-skills",
-  "version": "0.2.0",
-  "description": "Evidence-grounded student career planning, interview preparation, real-interview review, and Feishu delivery workflows for Codex.",
+  "version": "0.3.0",
+  "description": "Portable student job-search skills for campus role matching, career planning, resume evidence, portfolio planning, interview delivery, and Feishu-ready acceptance.",
   "author": {
     "name": "寂辉 Amant"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "寂辉校招职业规划与面试 Skills",
-    "shortDescription": "职业规划、通用模拟、专岗准备与真实面试复盘",
-    "longDescription": "把学生简历、问卷、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可执行、可训练且可验收的交付材料。",
+    "shortDescription": "校招选岗、职业规划、简历与面试交付",
+    "longDescription": "把学生简历、岗位、JD、面试邀约和真实逐字稿转成证据可追溯、边界清楚、可执行、可训练且可验收的材料。",
     "developerName": "寂辉 Amant",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
-    "defaultPrompt": "根据任务自动选择职业规划、通用模拟面试、专岗准备或真实面试复盘 Skill；把学生简历、问卷、JD、邀约或真实逐字稿转成证据可追溯、边界清楚、可执行、可训练且可验收的材料，并保持页面范围和写后读回边界。"
+    "defaultPrompt": "根据任务自动选择校招选岗、职业规划、简历、通用模拟面试、专岗准备或真实面试复盘 Skill；把学生简历、岗位、JD、邀约或真实逐字稿转成证据可追溯、边界清楚、可执行、可训练且可验收的材料，并保持每家公司最多 3 个岗位、页面范围和写后读回边界。"
   }
 }

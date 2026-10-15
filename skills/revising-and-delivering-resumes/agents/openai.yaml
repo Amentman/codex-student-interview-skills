@@ -1,0 +1,4 @@
+interface:
+  display_name: "简历修改与交付"
+  short_description: "汇总多来源证据，修改简历并验收一致的 Word/PDF"
+  default_prompt: "Use $revising-and-delivering-resumes to trace the provided resume, WeChat, Feishu, knowledge-base, mentor, and course evidence before revising, redlining, or verifying the requested Word/PDF deliverables."

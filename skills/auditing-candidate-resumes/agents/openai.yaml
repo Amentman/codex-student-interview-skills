@@ -1,0 +1,6 @@
+interface:
+  display_name: "候选人简历审查"
+  short_description: "面向HR与用人经理的候选人简历证据审查、时间线核对及面试核验"
+  default_prompt: "使用 $auditing-candidate-resumes 从 HR 或用人经理视角审查这份候选人简历，区分事实、推断、材料缺失、岗位证据缺口、真实性风险与待核验项；如交付正式文档，先给招聘动作和最多三个决定性问题，并逐页渲染验收。"
+policy:
+  allow_implicit_invocation: true

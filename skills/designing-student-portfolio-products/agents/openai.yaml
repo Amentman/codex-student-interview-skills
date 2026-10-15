@@ -1,0 +1,4 @@
+interface:
+  display_name: "学生作品集产品方案"
+  short_description: "交付学生自行落地的前置资料、完整 PRD、UI/UX Demo 与验收标准"
+  default_prompt: "使用 $designing-student-portfolio-products 为这名学生制作一套由学生自行开发落地的完整作品集规划包。"
